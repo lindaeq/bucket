@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./App.css";
 
 export default function App() {
@@ -17,6 +17,25 @@ export default function App() {
       addItem();
     }
   }
+
+  // Handle Backspace key to delete the active goal
+  useEffect(() => {
+    function handleBackspace(e) {
+      if (e.key === "Backspace" && activeIndex !== null) {
+        e.preventDefault(); // prevent browser navigation back
+        setList((prevList) => {
+          const newList = [...prevList];
+          newList.splice(activeIndex, 1); // remove item at activeIndex
+          return newList;
+        });
+        setActiveIndex(null); // reset active index after deletion
+      }
+    }
+    window.addEventListener("keydown", handleBackspace);
+    return () => {
+      window.removeEventListener("keydown", handleBackspace);
+    };
+  }, [activeIndex]);
 
   function toggleActive(index) {
     if (activeIndex === index) {
@@ -41,14 +60,15 @@ export default function App() {
         <div
           key={index}
           onClick={() => toggleActive(index)}
-          style={{ border: "1px solid black", margin: "10px", padding: "10px", cursor: "pointer" }}
+          style={{
+            border: activeIndex === index ? "2px solid white" : "1px solid black",
+            margin: "10px",
+            padding: "10px",
+            cursor: "pointer",
+          }}
         >
           <h3>{goal}</h3>
-          {activeIndex === index && (
-            <div>
-              <p>Images or details here...</p>
-            </div>
-          )}
+          {activeIndex === index && <div><p>Images or details here...</p></div>}
         </div>
       ))}
     </div>
