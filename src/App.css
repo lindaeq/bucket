@@ -40,3 +40,50 @@
 .read-the-docs {
   color: #888;
 }
+
+body {
+
+  font-family: 'Times New Roman', Times, serif;
+  background-color: #FFD1DC;
+  margin: 20px;
+
+}
+
+h1 {
+
+  color: #000000;
+  text-align: center;
+
+}
+
+
+input {
+  padding: 15px;
+  width: 250px;
+  margin-right: 10px;
+  border: 1px solid #ffd4e1;
+  border-radius: 4px;
+}
+
+button {
+  background-color: #ff6f61;
+  color: white;
+  border: none;
+  padding: 9px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #ffadd3;
+}
+
+ul {
+  margin-top: 20px;
+  list-style-type: square;
+}
+
+li {
+  margin-bottom: 8px;
+  font-weight: bold;
+}
