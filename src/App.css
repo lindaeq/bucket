@@ -1,8 +1,11 @@
-/* 🌸 Background and centering */
+@import url('https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Great+Vibes&display=swap');
+
+/* 🌸 Body and background */
 body {
   margin: 0;
   padding: 0;
-  font-family: "Poppins", "Times New Roman", sans-serif;
+  font-family: 'Patrick Hand', cursive;
+  text-transform: lowercase;
   background: linear-gradient(180deg, #ffe6f0 0%, #fff3f7 40%, #ffeaf6 100%);
   min-height: 100vh;
   display: flex;
@@ -12,6 +15,17 @@ body {
   padding: 6vh 0;
   position: relative;
   overflow-x: hidden;
+}
+
+/* Branch image */
+.branch {
+  width: 220px;
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%) rotate(3deg);
+  z-index: 1;
+  opacity: 0.85;
 }
 
 /* 🌸 Cherry blossom petals */
@@ -38,18 +52,9 @@ body {
 }
 
 @keyframes fall {
-  0% {
-    transform: translateY(-10vh) rotate(0deg);
-    opacity: 0.8;
-  }
-  50% {
-    transform: translateY(50vh) rotate(180deg);
-    opacity: 1;
-  }
-  100% {
-    transform: translateY(110vh) rotate(360deg);
-    opacity: 0.7;
-  }
+  0% { transform: translateY(-10vh) rotate(0deg); opacity:0.8; }
+  50% { transform: translateY(50vh) rotate(180deg); opacity:1; }
+  100% { transform: translateY(110vh) rotate(360deg); opacity:0.7; }
 }
 
 /* 🌷 App container */
@@ -57,9 +62,9 @@ body {
   z-index: 2;
   width: 90%;
   max-width: 700px;
-  background: rgba(255, 255, 255, 0.7);
+  background: rgba(255,255,255,0.75);
   border-radius: 20px;
-  box-shadow: 0 10px 25px rgba(255, 182, 193, 0.3);
+  box-shadow: 0 10px 25px rgba(255,182,193,0.3);
   padding: 40px;
   text-align: center;
   backdrop-filter: blur(8px);
@@ -71,20 +76,23 @@ body {
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* 🌷 Title and subtitle */
-h1 {
+/* Main title */
+.main-title {
+  font-family: 'Great Vibes', cursive;
+  font-size: 3rem;
   color: #ff6f91;
-  font-size: 2.2rem;
   margin-bottom: 10px;
+  text-transform: lowercase;
 }
 
+/* Subtitle */
 .subtitle {
   color: #555;
   margin-bottom: 25px;
   font-size: 1rem;
 }
 
-/* 🪞 Input section */
+/* Input section */
 .input-section {
   display: flex;
   justify-content: center;
@@ -102,6 +110,12 @@ input {
   outline: none;
   transition: border 0.3s ease;
   background: white;
+  color: #333;
+  font-family: 'Patrick Hand', cursive;
+}
+
+input::placeholder {
+  color: #bbb;
 }
 
 input:focus {
@@ -124,7 +138,7 @@ button:hover {
   transform: translateY(-2px);
 }
 
-/* 🪞 Bucket list */
+/* Bucket list */
 .list-container {
   display: flex;
   flex-direction: column;
@@ -151,18 +165,40 @@ button:hover {
   box-shadow: 0 0 10px rgba(255, 143, 171, 0.5);
 }
 
-.goal-card h3 {
+/* Goal top: checkbox + text */
+.goal-top {
+  display: flex;
+  align-items: center;
+  gap: 20px; /* Checkbox aligned to the left */
+}
+
+.goal-text {
   margin: 0;
   font-size: 1.2rem;
   color: #333;
 }
 
-.goal-details {
-  margin-top: 8px;
-  color: #666;
-  font-size: 0.95rem;
+.goal-text.checked {
+  text-decoration: line-through;
+  color: #999;
 }
 
+/* Reflection / note textarea */
+.goal-note {
+  width: 100%;
+  margin-top: 8px;
+  padding: 8px;
+  border-radius: 12px;
+  border: 1px solid #ffc1cc;
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1rem;
+  resize: none;
+  overflow: hidden;
+  min-height: 40px;
+  line-height: 1.3rem;
+}
+
+/* Empty message */
 .empty-message {
   color: #999;
   font-style: italic;

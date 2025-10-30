@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./App.css";
 
 export default function App() {
@@ -6,36 +6,43 @@ export default function App() {
   const [list, setList] = useState([]);
   const [activeIndex, setActiveIndex] = useState(null);
 
-  // 🌸 Add new item
+  // Add new goal
   function addItem() {
-    if (item.trim() === "") return;
-    setList([...list, { text: item, checked: false }]);
+    if (!item.trim()) return;
+    setList([...list, { text: item.toLowerCase(), checked: false, note: "" }]);
     setItem("");
   }
 
-  // 🌸 Enter key adds item
+  // Enter key adds item
   function handleKeyDown(e) {
     if (e.key === "Enter") addItem();
   }
 
-  // 🌸 Toggle selection
+  // Toggle active goal
   function toggleActive(index) {
     setActiveIndex(activeIndex === index ? null : index);
   }
 
-  // 🌸 Toggle checkbox
+  // Toggle checkbox
   function toggleCheck(index) {
-    const newList = [...list];
-    newList[index].checked = !newList[index].checked;
-    setList(newList);
+    const updated = [...list];
+    updated[index].checked = !updated[index].checked;
+    setList(updated);
   }
 
-  // 🌸 Delete active goal with Backspace
+  // Update note text
+  function updateNote(index, text) {
+    const updated = [...list];
+    updated[index].note = text;
+    setList(updated);
+  }
+
+  // Delete goal with backspace
   useEffect(() => {
     function handleBackspace(e) {
       if (e.key === "Backspace" && activeIndex !== null) {
         e.preventDefault();
-        setList((prevList) => prevList.filter((_, i) => i !== activeIndex));
+        setList((prev) => prev.filter((_, i) => i !== activeIndex));
         setActiveIndex(null);
       }
     }
@@ -43,7 +50,7 @@ export default function App() {
     return () => window.removeEventListener("keydown", handleBackspace);
   }, [activeIndex]);
 
-  // 🌸 Generate falling petals dynamically
+  // Petals
   useEffect(() => {
     const petalContainer = document.querySelector(".petal-container");
     for (let i = 0; i < 15; i++) {
@@ -56,45 +63,42 @@ export default function App() {
     }
   }, []);
 
+  // Auto-resize textarea
+  function autoResize(e) {
+    e.target.style.height = "auto";
+    e.target.style.height = e.target.scrollHeight + "px";
+  }
+
   return (
     <div className="app-wrapper">
-      {/* 🌸 Petal animation layer */}
       <div className="petal-container"></div>
 
-      {/* 🌿 Sakura branch (optional aesthetic element) */}
       <img
         src="https://pngimg.com/d/cherry_blossom_PNG8683.png"
-        alt="sakura branch"
-        style={{
-          width: "220px",
-          position: "absolute",
-          top: "10px",
-          left: "50%",
-          transform: "translateX(-50%) rotate(3deg)",
-          zIndex: 1,
-          opacity: 0.85,
-        }}
+        alt="branch"
+        className="branch"
       />
 
-      {/* 🌷 Main content */}
       <div className="app-container">
-        <h1>🌸 My Yearly Bucket List 🌸</h1>
-        <p className="subtitle">Pin your dreams, one blossom at a time.</p>
+        <h1 className="main-title">my yearly bucket list</h1>
+        <p className="subtitle">pin your dreams, one blossom at a time</p>
 
+        {/* Input */}
         <div className="input-section">
           <input
             type="text"
             value={item}
             onChange={(e) => setItem(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="Add a goal..."
+            placeholder="add a goal..."
           />
-          <button onClick={addItem}>Add</button>
+          <button onClick={addItem}>add</button>
         </div>
 
+        {/* Bucket list */}
         <div className="list-container">
           {list.length === 0 ? (
-            <p className="empty-message">No goals yet — start your journey 🌷</p>
+            <p className="empty-message">no goals yet 🌷</p>
           ) : (
             list.map((goal, index) => (
               <div
@@ -102,23 +106,35 @@ export default function App() {
                 className={`goal-card ${activeIndex === index ? "active" : ""}`}
                 onClick={() => toggleActive(index)}
               >
-                <h3>
+                <div className="goal-top">
                   <input
                     type="checkbox"
                     checked={goal.checked}
-                    onChange={() => toggleCheck(index)}
-                    style={{
-                      marginRight: "10px",
-                      transform: "scale(1.2)",
-                      accentColor: "#ff8fab",
+                    onChange={(e) => {
+                      e.stopPropagation();
+                      toggleCheck(index);
                     }}
                   />
-                  {goal.text}
-                </h3>
+                  <p
+                    className={`goal-text ${goal.checked ? "checked" : ""}`}
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    {goal.text}
+                  </p>
+                </div>
+
                 {activeIndex === index && (
-                  <div className="goal-details">
-                    <p>✨ Add photos, notes, or inspiration here...</p>
-                  </div>
+                  <textarea
+                    className="goal-note"
+                    placeholder="write a note or reflection..."
+                    value={goal.note}
+                    onChange={(e) => {
+                      updateNote(index, e.target.value);
+                      autoResize(e);
+                    }}
+                    onClick={(e) => e.stopPropagation()}
+                    rows={1}
+                  />
                 )}
               </div>
             ))
