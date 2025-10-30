@@ -50,28 +50,30 @@ export default function App() {
     return () => window.removeEventListener("keydown", handleBackspace);
   }, [activeIndex]);
 
-  // Continuous petal spawning
+  // Petals spawn continuously inside animation loop
   useEffect(() => {
-    const interval = setInterval(() => {
-      setPetals((prev) => [
-        ...prev,
-        {
-          id: Date.now() + Math.random(),
-          x: Math.random() * window.innerWidth,
-          y: -50,
-          speed: 0.5 + Math.random(),
-          rotation: Math.random() * 360,
-          rotationSpeed: Math.random() * 2,
-        },
-      ]);
-    }, 500); // one every 0.5s
-    return () => clearInterval(interval);
-  }, []);
+    let lastSpawn = Date.now();
 
-  // Animate petals
-  useEffect(() => {
     let animationFrame;
     function animate() {
+      const now = Date.now();
+      // Spawn a new petal every 500ms
+      if (now - lastSpawn > 500) {
+        setPetals((prev) => [
+          ...prev,
+          {
+            id: Date.now() + Math.random(),
+            x: Math.random() * window.innerWidth,
+            y: -50,
+            speed: 0.5 + Math.random(),
+            rotation: Math.random() * 360,
+            rotationSpeed: Math.random() * 2,
+          },
+        ]);
+        lastSpawn = now;
+      }
+
+      // Animate petals
       setPetals((prev) =>
         prev.map((p) => {
           let newY = p.y + p.speed;
@@ -79,8 +81,10 @@ export default function App() {
           return { ...p, y: newY, rotation: p.rotation + p.rotationSpeed };
         })
       );
+
       animationFrame = requestAnimationFrame(animate);
     }
+
     animate();
     return () => cancelAnimationFrame(animationFrame);
   }, []);
@@ -152,7 +156,7 @@ export default function App() {
     window.addEventListener("mouseup", onMouseUp);
   }
 
-  // Add decoration
+  // Add decoration safely inside container bounds
   function addDecoration() {
     if (!containerRef.current) return;
     const container = containerRef.current.getBoundingClientRect();
